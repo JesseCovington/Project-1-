@@ -23,12 +23,12 @@ This document contains the following details:
 The main purpose of this network is to expose a load-balanced and monitored instance of DVWA, the D*mn Vulnerable Web Application.
 
 Load balancing ensures that the application will be highly stable, in addition to restricting access to the network.
-- Load Balancers protect from Denial of Service attacks as web traffic is directed to different machines. 
-- The advantage of using a Jump box in this network means that updating or changing the webserver machines on this network can be done simultaniously while restricting access to the webservers via a single provisioner machine. 
+- Load Balancers protect from DDoS attacks as web traffic is directed to different machines. 
+- The advantage of using a Jump box in this network means that updating or changing the webserver machines on this network can be done simultaniously while restricting access to the network to a single gateway. 
 
-Integrating an ELK server allows users to easily monitor the vulnerable VMs for changes to the _____ and system logs.
-- _TODO: Filebeat watches for ?_
-- _TODO: What does Metricbeat record?_
+Integrating an ELK server allows users to easily monitor the vulnerable VMs for changes to the logs and system traffic.
+- Filebeat monitors logs files and changes to log events.
+- Metricbeat collects metrics form the system and services running on the server.
 
 The configuration details of each machine may be found below.
 _Note: Use the [Markdown Table Generator](http://www.tablesgenerator.com/markdown_tables) to add/remove values from the table_.
@@ -72,8 +72,8 @@ The playbook implements the following tasks:
 - Installs Docker
 - Installs python3_pip
 - Installs the Docker Module
-- Increases the Virtual Memory of the VM and maximizes use
-- Download and Launch a Docker ELK Container
+- Runs the following command: sysctl -w vm.max_map_count=262144
+- Download and Launch a Docker Container: ELK
 - Enables docker on boot
 
 The following screenshot displays the result of running `docker ps` after successfully configuring the ELK instance.
@@ -91,19 +91,16 @@ We have installed the following Beats on these machines:
 - Metricbeat
 
 These Beats allow us to collect the following information from each machine:
-- _TODO: In 1-2 sentences, explain what kind of data each beat collects, and provide 1 example of what you expect to see. E.g., `Winlogbeat` collects Windows logs, which we use to track user logon events, etc._
+- Filebeat will collect changes made to our logs.
+- Metricbeat will collect statistics and metrics of our network.
 
 ### Using the Playbook
 In order to use the playbook, you will need to have an Ansible control node already configured. Assuming you have such a control node provisioned:
 
 SSH into the control node and follow the steps below:
-- Copy the _____ file to _____.
-- Update the _____ file to include...
-- Run the playbook, and navigate to ____ to check that the installation worked as expected.
-
-_TODO: Answer the following questions to fill in the blanks:_
-- _Which file is the playbook? Where do you copy it?_
-- _Which file do you update to make Ansible run the playbook on a specific machine? How do I specify which machine to install the ELK server on versus which to install Filebeat on?_
-- _Which URL do you navigate to in order to check that the ELK server is running?
+- Copy the filebeat-playbook.yml file to etc/ansible/roles/filebeat-playbook.yml.
+- Copy the install-elk.yml file to etc/ansible/roles/install-elk.yml
+- Update the hosts file to include the different groups of servers. Then specify which group will get filebeat installed: _webservers_ in the filebeat-playbook.yml and which server will get ELK installed in the install-elk.yml with the correct group: _elk_.
+- Run the playbook, and navigate to http://40.113.244.59:5601/app/kibana to check that the installation worked as expected.
 
 _As a **Bonus**, provide the specific commands the user will need to run to download the playbook, update the files, etc._
